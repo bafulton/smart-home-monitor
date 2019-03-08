@@ -109,5 +109,5 @@ if __name__ == '__main__':
     _home = SmartHome('FultonHome', _devices)
 
     # monitor home status
-    interval = 5  # seconds
+    interval = 5 * 60  # seconds
     monitor(_home, interval)
