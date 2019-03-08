@@ -1,0 +1,90 @@
+[
+    {
+        "hardware": "CGN3",
+        "ip": "192.168.0.1",
+        "location": "Living Room",
+        "mac": "00:FC:8D:1F:DC:A2",
+        "manufacturer": "Hitron",
+        "name": "Router"
+    },
+    {
+        "hardware": "Mac Mini 2010",
+        "ip": "192.168.0.200",
+        "location": "Living Room",
+        "mac": "C8:BC:C8:E2:51:55",
+        "manufacturer": "Apple",
+        "name": "Mac Mini"
+    },
+    {
+        "hardware": "Raspberry Pi 3 B+",
+        "ip": "192.168.0.201",
+        "location": "Living Room",
+        "mac": "B8:27:EB:D6:1D:9C",
+        "manufacturer": "Canakit",
+        "name": "Raspberry Pi"
+    },
+    {
+        "hardware": "Home Mini H0A",
+        "ip": "192.168.0.101",
+        "location": "Living Room",
+        "mac": "E4:F0:42:42:21:39",
+        "manufacturer": "Google",
+        "name": "Google Home Mini"
+    },
+    {
+        "hardware": "LB130",
+        "ip": "192.168.0.103",
+        "location": "Bedroom",
+        "mac": "50:C7:BF:90:6B:82",
+        "manufacturer": "TP-Link",
+        "name": "Emilie's Lamp"
+    },
+    {
+        "hardware": "LB130",
+        "ip": "192.168.0.104",
+        "location": "Bedroom",
+        "mac": "50:C7:BF:94:70:38",
+        "manufacturer": "TP-Link",
+        "name": "Corner Light"
+    },
+    {
+        "hardware": "LB130",
+        "ip": "192.168.0.108",
+        "location": "Bedroom",
+        "mac": "50:C7:BF:9D:60:24",
+        "manufacturer": "TP-Link",
+        "name": "Ben's Lamp"
+    },
+    {
+        "hardware": "HS105",
+        "ip": "192.168.0.105",
+        "location": "Entryway",
+        "mac": "70:4F:57:B4:6B:67",
+        "manufacturer": "TP-Link",
+        "name": "Corner Light"
+    },
+    {
+        "hardware": "HS100",
+        "ip": "192.168.0.102",
+        "location": "Living Room",
+        "mac": "70:4F:57:5C:9C:BB",
+        "manufacturer": "TP-Link",
+        "name": "Fireplace Light"
+    },
+    {
+        "hardware": "HS100",
+        "ip": "192.168.0.106",
+        "location": "Living Room",
+        "mac": "50:C7:BF:E2:17:F4",
+        "manufacturer": "TP-Link",
+        "name": "Couch Lights"
+    },
+    {
+        "hardware": "HS100",
+        "ip": "192.168.0.107",
+        "location": "Living Room",
+        "mac": "50:C7:BF:E2:1B:62",
+        "manufacturer": "TP-Link",
+        "name": "Corner Light"
+    }
+]
