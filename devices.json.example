@@ -1,0 +1,18 @@
+[
+    {
+        "hardware": "XYZ100",
+        "ip": "192.168.0.101",
+        "location": "Living Room",
+        "mac": "MAC_ADDRESS",
+        "manufacturer": "Amazon",
+        "name": "Alexa"
+    },
+    {
+        "hardware": "ABC105",
+        "ip": "192.168.0.102",
+        "location": "Living Room",
+        "mac": "MAC_ADDRESS",
+        "manufacturer": "Apple",
+        "name": "Time Capsule"
+    }
+]
