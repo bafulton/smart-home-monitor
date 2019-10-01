@@ -1,18 +1,11 @@
 [
     {
-        "hardware": "XYZ100",
-        "ip": "192.168.0.101",
-        "location": "Living Room",
-        "mac": "MAC_ADDRESS",
-        "manufacturer": "Amazon",
-        "name": "Alexa"
+        "hardware": "hardware type (eg, HS100; optional)",
+        "ip": "ip address (required)",
+        "location": "room in house (optional)",
+        "mac": "mac address (optional)",
+        "manufacturer": "device manufacturer (optional)",
+        "name": "name (required)"
     },
-    {
-        "hardware": "ABC105",
-        "ip": "192.168.0.102",
-        "location": "Living Room",
-        "mac": "MAC_ADDRESS",
-        "manufacturer": "Apple",
-        "name": "Time Capsule"
-    }
+    ...
 ]
