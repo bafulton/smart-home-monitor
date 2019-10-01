@@ -3,13 +3,20 @@ import time
 import json
 import string
 import pingparsing
+import logging
+import multiprocessing as mp
 from datetime import datetime
-from typing import List, Dict
+from typing import List
+
+logging.basicConfig(filename='errors.log', filemode='w',
+                    format='%(name)s: %(levelname)s: %(message)s')
 
 
 class Device:
-    def __init__(self, name, ip: str, mac,
-                 manufacturer, hardware, location):
+    def __init__(self, name, ip: str, mac, manufacturer, hardware, location):
+        if not (name or ip):
+            raise Exception('A device must have a name and an IP.')
+
         self.name = name
         self.ip: str = ip
         self.mac = mac
@@ -17,8 +24,37 @@ class Device:
         self.hardware = hardware
         self.location = location
 
-    def __hash__(self):
-        return hash(repr(self))
+        self.ping_data = dict()
+
+    def refresh(self):
+        self._ping()
+
+        # Todo: Add more detailed device status checks here.
+
+    def _ping(self):
+        # ping the device
+        response = subprocess.run(['ping', '-c 1', self.ip],
+                                  stdout=subprocess.PIPE)
+
+        if response.returncode == 0:
+            # success; parse and store the response
+            p = pingparsing.PingParsing()
+            self.ping_data = p.parse(response.stdout).as_dict()
+
+        else:
+            # error; invalidate ping status and log the exception
+            self.ping_data = dict()
+
+            logging.error('Error while pinging %s (%s): \"%s\"' %
+                          (str(self), self.ip, response.stdout))
+
+    def okay(self) -> bool:
+        # packet_loss_count must be 0 for good device status
+        good = self.ping_data.get('packet_loss_count', 1) == 0
+
+        # Todo: Make the status dependent on more than just ping packet loss.
+
+        return good
 
     def __repr__(self):
         return 'Device(%s, %s, %s, %s, %s, %s)' % (
@@ -27,47 +63,28 @@ class Device:
         )
 
     def __str__(self):
-        # eg, "Ben's Lamp in the Entryway"
+        # eg, "Lamp in the Entryway"
         return '%s in the %s' % (self.name, self.location)
 
 
-class DeviceStatus:
-    def __init__(self):
-        self.ping: Dict = {}
-
-    def ok(self) -> bool:
-        return self.ping['packet_loss_count'] == 0
-
-        # TODO: Extend as other statuses are added...
-
-
 class SmartHome:
-    def __init__(self, name, devices: List[Device]):
+    def __init__(self, name, devices: List[Device] = None):
         self.name = name
-        # devices is a mapping of Device -> DeviceStatus
-        self.devices = {d: DeviceStatus() for d in devices}
+        self.devices = devices or list()
 
-    def check_status(self, logfile_path=None):
-        # ping all devices
-        self.pingall(logfile_path)
+    def refresh(self):
+        # Todo: Add non device-specific status checks here.
+        # ARP checks? https://stackoverflow.com/questions/1750803/
+        # obtain-mac-address-from-devices-using-python
+        # figure out router ip, try pinging router; try pinging internet?
 
-        # TODO: Add any other status checks...
+        def _refresh_device(device: Device):
+            device.refresh()
 
-    def pingall(self, logfile_path=None):
-        for d in self.devices:
-            # ping the device
-            response = subprocess.run(['ping', '-c 1', d.ip],
-                                      stdout=subprocess.PIPE)
-
-            # parse and store the response
-            p = pingparsing.PingParsing()
-            self.devices[d].ping = p.parse(response.stdout).as_dict()
-
-            # log any errors, if requested
-            if logfile_path and not self.devices[d].ok():
-                # 'ab+' == append binary str, create file if not found
-                with open(logfile_path, 'ab+') as logfile:
-                    logfile.write(response.stdout + b'\n')
+        # spin up worker processes to check each device
+        pool = mp.Pool(processes=len(self.devices))
+        pool.map(_refresh_device, self.devices)
+        pool.join()
 
 
 def monitor(home: SmartHome, interval: int):
@@ -84,15 +101,14 @@ def monitor(home: SmartHome, interval: int):
         while True:
             # generate a path for the errors logfile
             timestamp = datetime.now()
-            logpath = timestamp.strftime('logs/%Y-%m-%d %H.%M.%S.log')
 
-            # update the status of the smart home
-            home.check_status(logpath)
+            # refresh the smart home
+            home.refresh()
 
             # update the status logfile
             ts_str = timestamp.strftime('%Y-%m-%d %H:%M:%S')
-            stat_str = ' '.join(['x' if status.ok() else ' '
-                                 for _, status in home.devices.items()])
+            stat_str = ' '.join(['x' if d.okay() else ' '
+                                 for d in home.devices])
             statusfile.write('%s   %s\n' % (ts_str, stat_str))
             statusfile.flush()
 
@@ -102,12 +118,12 @@ def monitor(home: SmartHome, interval: int):
 
 if __name__ == '__main__':
     # load the devices from json
-    _devices = json.loads(open('devices.json').read())
-    _devices = [Device(**_device) for _device in _devices]
+    devices = json.loads(open('devices.json').read())
+    devices = [Device(**device) for device in devices]
 
     # build the home
-    _home = SmartHome('FultonHome', _devices)
+    home = SmartHome('MyHome', devices)
 
     # monitor home status
-    interval = 5 * 60  # seconds
-    monitor(_home, interval)
+    interval = 60  # seconds
+    monitor(home, interval)
