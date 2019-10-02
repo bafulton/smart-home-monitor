@@ -10,7 +10,7 @@ import multiprocessing as mp
 from datetime import datetime
 from typing import List
 
-logging.basicConfig(filename='errors.log', filemode='w',
+logging.basicConfig(filename='errors.log', filemode='a',
                     format='%(name)s: %(levelname)s: %(message)s')
 
 
