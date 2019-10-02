@@ -49,8 +49,9 @@ class Device:
             # error; invalidate ping status and log the exception
             self.ping_data = dict()
 
-            logging.error('Error while pinging %s (%s): \"%s\"' %
-                          (str(self), self.ip, response.stdout))
+            ts = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            logging.error('%s: Error while pinging %s (%s): \"%s\"' %
+                          (ts, str(self), self.ip, response.stdout))
 
     def okay(self) -> bool:
         # packet_loss_count must be 0 for good device status
