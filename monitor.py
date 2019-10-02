@@ -28,10 +28,12 @@ class Device:
 
         self.ping_data = dict()
 
-    def refresh(self):
+    def refresh(self) -> 'Device':
         self._ping()
 
         # Todo: Add more detailed device status checks here.
+
+        return self
 
     def _ping(self):
         # ping the device
@@ -84,9 +86,10 @@ class SmartHome:
             device.refresh()
 
         # spin up worker processes to check each device
-        pool = mp.Pool(processes=len(self.devices))
-        pool.map(_refresh_device, self.devices)
-        pool.join()
+        with mp.Pool() as pool:
+            # mp.Manager() turns the devices list into a shared resource
+            self.devices = pool.map(Device.refresh,
+                                    mp.Manager().list(self.devices))
 
 
 def monitor(home: SmartHome, interval: int):
